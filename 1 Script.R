@@ -1,24 +1,39 @@
-excelFilePath <- "C:\\Users\\joaog\\Downloads\\ResiduosPerCapita(1).xlsx"
+excelFilePath <- "/home/verva/Downloads/ResiduosPerCapita.xlsx"
 
 library(readxl)
-data <- read_excel(excelFilePath,"Quadro","A13:C43")
+Paises <- read_excel(excelFilePath,"Quadro","A13:A43", col_types = "text")
+Paises <- as.vector(unlist(Paises))
 
-Paises1 = as.vector(as.character(unlist(data[1])))
-Ano1 = as.vector(as.double(unlist(data[2])))
-Ano2 = as.vector(as.double(unlist(data[3])))
+PaisesReq <- c("DK - Dinamarca", "GR - Grécia", "FR - França")
+Indexes <- vector(mode = "character", length(PaisesReq))
+Indexes <- match(PaisesReq, Paises)
+Indexes <- Indexes + 13 -1
+Indexes <- as.character(Indexes)
 
-ResiduosPerCapita <- vector(class(Ano1), length(c(Ano1,Ano2)))
-ResiduosPerCapita[c(TRUE,FALSE)]<-Ano1
-ResiduosPerCapita[c(FALSE,TRUE)]<-Ano2
+i = integer()
+for (i in 1:length(Indexes)){
+  Indexes[i] <- paste("B", Indexes[i], ":C", Indexes[i], sep = "")
+}
 
-Paises <- vector(class(Paises1), length(c(Paises1,Paises1)))
-Paises[c(TRUE,FALSE)]<-Paises1
-Paises[c(FALSE,TRUE)]<-Paises1
-Paises <- substr(Paises,1,2)
+for(i in 1:length(Indexes)){
+  if(i == 1){
+    ResiduosPerCapita = names(read_excel(excelFilePath,"Quadro",Indexes[i]))
+  }else{
+    ResiduosPerCapita = append(ResiduosPerCapita, names(read_excel(excelFilePath, "Quadro", Indexes[i])))
+  }
+}
+rm(i)
+rm(excelFilePath)
+
+Paises <- vector(class(PaisesReq), length(rep(PaisesReq,2)))
+Paises[c(TRUE,FALSE)]<-PaisesReq
+Paises[c(FALSE,TRUE)]<-PaisesReq
+rm(PaisesReq)
 
 Anos = as.factor(c("2004","2018"))
-data <- data.frame(as.factor(Paises), as.factor(ResiduosPerCapita),Anos)
+
+data <- data.frame(as.factor(Paises), as.factor(as.double(ResiduosPerCapita)),Anos)
 
 library(tidyverse)
-ggplot(data, aes(x=Paises, y=ResiduosPerCapita, fill= Anos)) + geom_bar(position = "dodge", stat = "identity")
+ggplot(data, aes(x=Paises, y=ResiduosPerCapita, fill = Anos)) + geom_bar(position = "dodge", stat = "identity")
 
