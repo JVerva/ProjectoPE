@@ -1,0 +1,57 @@
+excelFilePath <- "/home/verva/Downloads/EsperancaVida.xlsx"
+
+library(readxl)
+Paises <- names(read_excel(excelFilePath,"Quadro","B9:CY9", col_types = "text", .name_repair = "minimal"))
+Paises <- as.vector(unlist(Paises))
+Anos <- read_excel(excelFilePath,"Quadro","A9:A70", col_types = "text")
+
+PaisesReq <- c("NL - Países Baixos", "BG - Bulgária", "IT - Itália")
+for (j in 1:3) {
+  for(i in 1:3){
+    if(i==1 && j==1){
+    Indexes <- match(PaisesReq[j], Paises)
+    }
+    else{
+      Indexes <- append(Indexes, match(PaisesReq[j], Paises))
+    }
+    Paises[Indexes[i+(j-1)*3]]="Found"
+  }
+}
+Indexes <- Indexes + 1
+library(openxlsx)
+Indexes <- int2col(Indexes)
+for (i in 1:length(Indexes)){
+  Indexes[i] <- paste(Indexes[i], "9:", Indexes[i], "70", sep = "")
+}
+
+for(i in 1:length(PaisesReq)){
+  if(i == 1){
+    Paises <- rep(PaisesReq[i],61*length(PaisesReq))
+  }else{
+  Paises <- append(Paises,rep(PaisesReq[i],61*length(PaisesReq)))
+  }
+}
+#Paises <- vector(class(PaisesReq), length(rep(PaisesReq,3)))
+#Paises[c(TRUE,FALSE,FALSE)]<-PaisesReq
+#Paises[c(FALSE,TRUE,FALSE)]<-PaisesReq
+#Paises[c(FALSE,FALSE,TRUE)]<-PaisesReq
+#rm(PaisesReq)
+
+for(i in 1:length(Indexes)){
+  if(i == 1){
+    EsperancaDeVida = read_excel(excelFilePath,"Quadro",Indexes[i])
+  }else{
+    EsperancaDeVida = append(EsperancaDeVida, read_excel(excelFilePath, "Quadro", Indexes[i]))
+  }
+}
+
+Anos<- rep(Anos, 3*length(PaisesReq))
+Anos <- unlist(Anos)
+EsperancaDeVida <- as.vector(as.double(unlist(EsperancaDeVida)))
+data <- data.frame(as.factor(Paises), as.factor(EsperancaDeVida),as.factor(Anos))
+
+library(tidyverse)
+ggplot(data, aes(x=Paises, y=EsperancaDeVida, fill = Anos)) + geom_bar(position = "dodge", stat = "identity")
+
+rm(list = ls())
+

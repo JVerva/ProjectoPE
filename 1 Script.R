@@ -5,7 +5,6 @@ Paises <- read_excel(excelFilePath,"Quadro","A13:A43", col_types = "text")
 Paises <- as.vector(unlist(Paises))
 
 PaisesReq <- c("DK - Dinamarca", "GR - Grécia", "FR - França")
-Indexes <- vector(mode = "character", length(PaisesReq))
 Indexes <- match(PaisesReq, Paises)
 Indexes <- Indexes + 13 -1
 Indexes <- as.character(Indexes)
@@ -36,4 +35,6 @@ data <- data.frame(as.factor(Paises), as.factor(as.double(ResiduosPerCapita)),An
 
 library(tidyverse)
 ggplot(data, aes(x=Paises, y=ResiduosPerCapita, fill = Anos)) + geom_bar(position = "dodge", stat = "identity")
+
+rm(list = ls())
 
