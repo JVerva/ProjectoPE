@@ -34,5 +34,5 @@ Estacoes<-as.factor(Estacoes)
 nozono<- nozono
 data <- data.frame(Estacoes,as.factor(nozono))
 
-
-ggplot(data , aes(x = nozono)) + geom_histogram(colour = "Green", fill = "Gray",bins = 20)
+library(ggplot2)
+ggplot(data , aes(x = nozono)) + geom_histogram(colour = "Green", fill = "Gray",bins = 20) + facet_wrap(facets = vars(Estacoes))
