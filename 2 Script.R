@@ -3,7 +3,7 @@ excelFilePath <- "/home/verva/Downloads/EsperancaVida.xlsx"
 library(readxl)
 Paises <- names(read_excel(excelFilePath,"Quadro","B9:CY9", col_types = "text", .name_repair = "minimal"))
 Paises <- as.vector(unlist(Paises))
-Anos <- read_excel(excelFilePath,"Quadro","A9:A70", col_types = "text")
+Anos <- read_excel(excelFilePath,"Quadro","A51:A69", col_types = "text")
 
 PaisesReq <- c("NL - Países Baixos", "BG - Bulgária", "IT - Itália")
 for (j in 1:3) {
@@ -21,21 +21,18 @@ Indexes <- Indexes + 1
 library(openxlsx)
 Indexes <- int2col(Indexes)
 for (i in 1:length(Indexes)){
-  Indexes[i] <- paste(Indexes[i], "9:", Indexes[i], "70", sep = "")
+  Indexes[i] <- paste(Indexes[i], "51:", Indexes[i], "69", sep = "")
 }
 
 for(i in 1:length(PaisesReq)){
   if(i == 1){
-    Paises <- rep(PaisesReq[i],61*length(PaisesReq))
+    Paises <- rep(PaisesReq[i],18*length(PaisesReq))
   }else{
-  Paises <- append(Paises,rep(PaisesReq[i],61*length(PaisesReq)))
+  Paises <- append(Paises,rep(PaisesReq[i],18*length(PaisesReq)))
   }
 }
-#Paises <- vector(class(PaisesReq), length(rep(PaisesReq,3)))
-#Paises[c(TRUE,FALSE,FALSE)]<-PaisesReq
-#Paises[c(FALSE,TRUE,FALSE)]<-PaisesReq
-#Paises[c(FALSE,FALSE,TRUE)]<-PaisesReq
-#rm(PaisesReq)
+
+Categoria <- rep(c(rep("Total",18), rep("Homens",18), rep("Mulheres",18)),3)
 
 for(i in 1:length(Indexes)){
   if(i == 1){
@@ -47,11 +44,15 @@ for(i in 1:length(Indexes)){
 
 Anos<- rep(Anos, 3*length(PaisesReq))
 Anos <- unlist(Anos)
-EsperancaDeVida <- as.vector(as.double(unlist(EsperancaDeVida)))
-data <- data.frame(as.factor(Paises), as.factor(EsperancaDeVida),as.factor(Anos))
+EsperancaDeVida <- as.factor(as.vector(as.double(unlist(EsperancaDeVida))))
+Paises <- as.factor(Paises)
+Anos <- as.factor(Anos)
+Categoria <- as.factor(Categoria)
+
+data <- data.frame(Paises,EsperancaDeVida,Anos,Categoria)
+datar <- subset(data, Categoria == "Homens" | Categoria == "Mulheres")
 
 library(tidyverse)
-ggplot(data, aes(x=Paises, y=EsperancaDeVida, fill = Anos)) + geom_bar(position = "dodge", stat = "identity")
-
+ggplot(data = datar, aes(x=Anos, y=EsperancaDeVida, group = Paises, colour = Paises, fill = Categoria)) + geom_line() + facet_wrap(facets = vars(Categoria))
 rm(list = ls())
 
