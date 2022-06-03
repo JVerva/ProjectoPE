@@ -30,8 +30,13 @@ for(i in 1:length(EstacoesReq)){
 }
 rm(EstacoesReq)
 
+<<<<<<< HEAD
 Estacoes<-as.factor(Estacoes)
 nozono<-nozono
+=======
+Estacoes <-as.factor(Estacoes)
+nozono <- nozono
+>>>>>>> 6b4d9af66bd365580164d98c44c4db077da0dba7
 data <- data.frame(Estacoes,as.factor(nozono))
 
 library(ggplot2)
