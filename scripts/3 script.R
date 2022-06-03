@@ -1,10 +1,15 @@
-excelFilePath <- "/home/verva/Downloads/QualidadeARO3.xlsx"
+#path do ficheiro, sendo que não consegui automatizar o download devido ao login do tecnico
+excelFilePath <- "C:\\Users\\joaog\\Downloads\\QualidadeARO3.xlsx"
 
+#ler a linha com os nomes das regiões
 library(readxl)
 Estacoes <- names(read_excel(excelFilePath,"Sheet1","A1:J1", col_types = "text", .name_repair = "minimal"))
 Estacoes <- as.vector(unlist(Estacoes))
 
+#definir as regiões requeridas
 EstacoesReq <- c("Restelo", "Entrecampos")
+
+#encontrar as regiões requeridas e ler os seus dados
 Indexes <- match(EstacoesReq, Estacoes)
 library(openxlsx)
 Indexes <- int2col(Indexes)
@@ -19,6 +24,7 @@ for (i in 1:length(Indexes)){
   }
 }
 
+#construir a data frame
 nozono <- as.double(unlist(nozono))
 
 for(i in 1:length(EstacoesReq)){
@@ -28,16 +34,16 @@ for(i in 1:length(EstacoesReq)){
    Estacoes <- append(Estacoes, rep(EstacoesReq[i],8784)) 
   }
 }
-rm(EstacoesReq)
-
-<<<<<<< HEAD
-Estacoes<-as.factor(Estacoes)
-nozono<-nozono
-=======
-Estacoes <-as.factor(Estacoes)
-nozono <- nozono
->>>>>>> 6b4d9af66bd365580164d98c44c4db077da0dba7
 data <- data.frame(Estacoes,as.factor(nozono))
 
+#plot do gráfico
 library(ggplot2)
-ggplot(data , aes(x = nozono)) + geom_histogram(colour = "Green", fill = "Gray",bins = 20) + facet_wrap(facets = vars(Estacoes))
+ggplot(data , aes(x = nozono)) + 
+  geom_histogram(colour = "black", fill = "green",bins = 20) + 
+  facet_wrap(facets = vars(Estacoes)) +
+  labs(x = expression(paste("Nivel de ozono (",mu,g/m^3,")")), y = "Contagem", sep="") +
+  scale_x_continuous(breaks = round(seq(min(nozono), max(nozono), by = 25),1)) +
+  scale_y_continuous(breaks = round(seq(0, 1600, by = 250),1))
+
+#limpar os dados
+rm(list = ls())
