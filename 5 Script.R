@@ -7,21 +7,9 @@ Vteo = 0.2299254851867
 set.seed(Seed) 
 rn <- sort(rexp(N,Lambda))
 fun <- ecdf(rn)
-data <- fun(rn)
-intersect(data,7)
-plot(data)
+plot(fun)
 
-a <- double()
-a <- 0
-i <- integer()
-i <- 0
-
-while(a < 7){
-  i=i+1
-  a = rn[i]
-}
-
-Vexp = 1 - data[i]
+Vexp = 1-fun(7)
 
 resp = abs(Vteo-Vexp)
 
