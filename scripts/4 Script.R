@@ -21,9 +21,12 @@ TAD <- as.double(unlist(read_excel(excelFilePath,"Sheet1",Indexes[2], col_types 
 #fazer a data frame
 data <- data.frame(Colesterol,TAD)
 
-"plot do grafico"
+#plot do gráfico
 library(ggplot2)
-ggplot(data, aes(Colesterol, TAD, color = Colesterol)) + 
+ggplot(data, aes(Colesterol, TAD, color = TAD)) + 
   geom_point(shape = 16, size = 3, show.legend = FALSE) +
   scale_y_continuous(breaks = round(seq(min(TAD), max(TAD), by = 2),1)) +
   scale_x_continuous(breaks = round(seq(min(Colesterol)-10, max(Colesterol)+10, by = 10),1))
+
+#limpar os dados
+rm(list = ls())

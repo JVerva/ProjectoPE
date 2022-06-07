@@ -14,12 +14,14 @@ for(j in 1:nam){
   if(j == 1){
   X <- mean(data)
   Sd <- sd(data)
-  int <- Z*Sd
+  int <- 2*Z*Sd
   }else{
     X <- c(X, mean(data))
     Sd <- c(Sd, sd(data))
-    int <- c(int, Z*Sd[j])
+    int <- c(int, 2*Z*Sd[j])
   }
 }
 
 meanint <- mean(int)
+
+rm(list = ls())

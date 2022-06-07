@@ -1,3 +1,4 @@
+#definir valores iniciais
 seed = 57
 nam = 950
 lambda = 1.99
@@ -8,6 +9,7 @@ Z = 1.7
 data = matrix(data = 0, 50, 600)
 set.seed(seed)
 
+#gerar os dados
 for (i in 1:25){
   nc = pc * dim*i
   for(j in 1:nam){
@@ -36,5 +38,19 @@ for (i in 1:25){
     x <- append(x, i*dim)
   }
 }
-plot(x, meanintc, col = "green")
-points(x, meanint, col = "red")
+
+#fazer a data frame
+tipo = c(rep("limpo",length(meanint)),rep("contaminado",length(meanintc)))
+meanintall = c(meanint,meanintc)
+data = data.frame(x,meanintall,tipo)
+
+#plot do gráfico
+library(ggplot2)
+ggplot(data, aes(x = x, y=meanintall, group = tipo, color = tipo)) + 
+  geom_point(shape = 16, size = 2) +
+  scale_y_continuous(breaks = seq(min(meanintall)-0.001437, max(meanintall)+0.001, by = 0.001)) +
+  scale_x_continuous(breaks = round(seq(min(x)-100, max(x), by = 250),1)) +
+  labs(x = "Dimensão da amostra", y = "Média da amplitude dos intervalods de confiança") 
+
+#limpar os dados
+rm(list = ls())
