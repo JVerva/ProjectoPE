@@ -4,7 +4,6 @@ nam = 600
 lambda = 2.33
 dim = 100
 Z = 3.29 
-data = matrix(data = 0, 50, 600)
 set.seed(seed)
 
 #gerar os dados
@@ -12,11 +11,11 @@ for (i in 1:50){
   for(j in 1:nam){
     data <- rexp(dim*i,lambda)
     if(j == 1){
-      Sd = sd(data)
-      int = Sd * Z * 2
+      X <- mean(data)
+      int <- (1/X)*2*Z/sqrt(dim*i)
     }else{
-      Sd = append(Sd, sd(data))
-      int = append(int, Sd[j] * Z *2)
+      X <- c(X, mean(data))
+      int = append(int, (1/X[j])*2*Z/sqrt(dim*i))
     }
   }
   if(i==1){
@@ -31,11 +30,11 @@ for (i in 1:50){
 #fazer a data frame
 data <- data.frame(x, meanint)
 
-#plot do grafico
+#plot do gráfico
 library(ggplot2)
 ggplot(data, aes(x, meanint, color = meanint)) + 
   geom_point(shape = 16, size = 3, show.legend = FALSE) +
-  scale_y_continuous(breaks = seq(min(meanint), max(meanint), by = 0.005)) +
+  scale_y_continuous(breaks = seq(min(meanint), max(meanint)+0.05, by = 0.05)) +
   scale_x_continuous(breaks = round(seq(min(x)-100, max(x), by = 500),1)) +
   labs(x = "dimensão da amostra", y = "Média da amplitude dos intervalods de confiança") 
 

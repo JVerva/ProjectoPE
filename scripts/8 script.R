@@ -1,24 +1,19 @@
 seed = 182
-dim = 688
+n = 688
 nam = 1200
 lambda = 0.78
 Eteo = 1/lambda
-nconf = 0.9
-alfa = 1-nconf
-nfora = alfa/2 * dim
-Z =  	1.645
+Z =  	1.6449
 set.seed(seed)
 
-for(j in 1:nam){
-  data <- rexp(dim , lambda)
-  if(j == 1){
+for(i in 1:nam){
+  data <- rexp(n, lambda)
+  if(i == 1){
   X <- mean(data)
-  Sd <- sd(data)
-  int <- 2*Z*Sd
+  int <- (1/X)*2*Z/sqrt(n)
   }else{
     X <- c(X, mean(data))
-    Sd <- c(Sd, sd(data))
-    int <- c(int, 2*Z*Sd[j])
+    int <- c(int, (1/X[i])*2*Z/sqrt(n))
   }
 }
 
